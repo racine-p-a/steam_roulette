@@ -14,9 +14,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-// todo : remake the pickgame working onload (broke for embedding)
-
 /*
  * The application get your API steam key and will use it during the processus.
  * Then, it displays a form to the user expecting a steam id as an input.
@@ -132,7 +129,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
                 codeHTML += \'<p><img src="https://steamcdn-a.akamaihd.net/steam/apps/\' + gameid + \'/header.jpg" / alt="Picture of the game : \' + gameName + \'"></p>\';
                 codeHTML += \'<p>Steam indicates you already played it for \' + timePlayed + \' hours.</p>\';
                 const linkToGame = \'steam://rungameid/\' + gameid;
-                codeHTML += \'<a id="steamButton" href="\' + linkToGame + \'">Launch game</a>\';
+                codeHTML += \'<p><a id="steamButton" href="\' + linkToGame + \'">Launch game</a></p>\';
                 const myGameBlock = document.getElementById(\'gameChosen\');
                 myGameBlock.innerHTML = codeHTML;
             }
@@ -147,7 +144,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
             /*
              * Pick randomly a game from the user library.
              */
-            function pickGame(){
+            function pickGame(firstTimeLoading=false){
                 if(Object.keys(steamCompleteList).length > 10 && Object.keys(ownedGames).length !== 0) {
                     //console.log("you own " + Object.keys(ownedGames).length + " games.");
                     const indexGameToPick = Math.floor(Math.random() * Object.keys(ownedGames).length);
@@ -168,7 +165,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
                         }
                         count++;
                     }
-                } else if(Object.keys(steamCompleteList).length < 10) {
+                } else if(Object.keys(steamCompleteList).length < 10 && firstTimeLoading==false) {
                     displaySteamConnectionError();
                 }
             }
@@ -178,7 +175,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
     ( isset($_POST['steamId']) && $_POST['steamId']!='') ? $defaultValue = $_POST['steamId'] : $defaultValue = '';
 
     $form .= '
-    <div id="steamRouletteWrapper" onload="pickGame();">
+    <div id="steamRouletteWrapper">
         <h1 id="titleSteamRoulette">Steam roulette</h1>
         
         <div>
@@ -198,14 +195,17 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
     if (count($gameList) > 0){
         $form .= '<h5>Game :</h5>
         <div id="gameBlock">
-            <button onclick="pickGame(true);">Pick a game</button>
+            <button onclick="pickGame(false);">Pick another game</button>
             <div id="gameChosen">
             </div>
         </div>
         ';
     }
     $form .= '
-    </div>';
+    </div>
+    <script>
+        pickGame(true);
+    </script>';
 
     $footer = '
     </body>
