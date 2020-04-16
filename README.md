@@ -16,7 +16,7 @@ directory (/var/www/html or /var/www). And then, just open the example.php page.
 ### Imported in another project
 Clone the steam roulette somewhere in your project and import the file ___roulette.php___.
 
-Then import it :
+This way :
 ```php
 // Import it :
 require_once dirname(__FILE__) . '/path/to/roulette.php';
