@@ -23,7 +23,7 @@ error_reporting(E_ALL);
 /**
  * Just launches everything.
  */
-function getVueRoulette(){
+function getVueRoulette($completeWebpage=false){
     // First of all, get the steam API key.
     $steamAPIkey='';
     try {
@@ -32,7 +32,7 @@ function getVueRoulette(){
         echo $e;
     }
     // We are ready to display the form.
-    displayForm($steamAPIkey);
+    return displayForm($steamAPIkey, $completeWebpage);
 }
 
 /**
@@ -45,14 +45,14 @@ function getAPIkey(&$steamAPIkey){
         try {
             $steamAPIkey = trim(file_get_contents(dirname(__FILE__) . '/steam_api_key_dev'));
         } catch (Exception $e){
-            echo '<p>Can\'t acces to the API steam fey file : ' . dirname(__FILE__) . '/steam_api_key_dev </p>';
+            echo '<p>Can\'t acces to the API steam key file : ' . dirname(__FILE__) . '/steam_api_key_dev </p>';
             echo '<p>File is found but is unreadable.</p>';
         }
     } else if (file_exists('steam_api_key')) { // Get the user steam api key.
         try {
             $steamAPIkey = trim(file_get_contents(dirname(__FILE__) . '/steam_api_key'));
         } catch (Exception $e){
-            echo '<p>Can\'t acces to the API steam fey file : ' . dirname(__FILE__) . '/steam_api_key </p>';
+            echo '<p>Can\'t acces to the API steam key file : ' . dirname(__FILE__) . '/steam_api_key </p>';
             echo '<p>File is found but is unreadable.</p>';
         }
     } else { // No api key found.
@@ -62,10 +62,9 @@ function getAPIkey(&$steamAPIkey){
 
 /**
  * Builds the entire HTML/CSS/js code of the page. then displays it.
- * // todo make it embeddable.
  * @param string $steamAPIkey
  */
-function displayForm($steamAPIkey=''){
+function displayForm($steamAPIkey='', $completeWebpage=false){
     // todo make it less ugly (need help)
 
     /*
@@ -80,10 +79,15 @@ function displayForm($steamAPIkey=''){
         $completeSteamGameList = json_decode(file_get_contents('http://api.steampowered.com/ISteamApps/GetAppList/v0001/'), true)['applist']['apps']['app'];
     }
 
-    $form='<html lang="en">
+    $header = '<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Steam roulette</title>
-        <script type="text/javascript">
+    </head>
+    <body>';
+
+    $form='
+        <script>
             // Complete list of all steam games paired like this : {gameId: gameName)
             const steamCompleteList = {';
     foreach ($completeSteamGameList as $game) {
@@ -129,11 +133,11 @@ function displayForm($steamAPIkey=''){
                     let count = 0;
                     for(gameid in ownedGames) {
                         if(count === indexGameToPick) {
-                            console.log("chosen game id : " + gameid);
-                            console.log("chosen game time played : " + ownedGames[gameid]);
+                            //console.log("chosen game id : " + gameid);
+                            //console.log("chosen game time played : " + ownedGames[gameid]);
                             for(gameidcompleteList in steamCompleteList) {
                                 if(gameidcompleteList==gameid) {
-                                    console.log("game name : " + steamCompleteList[gameidcompleteList]);
+                                    //console.log("game name : " + steamCompleteList[gameidcompleteList]);
                                     // Finally, we have all informations required. Let\'s update the page.
                                     updateChosenGameView(gameid, steamCompleteList[gameidcompleteList], ownedGames[gameid]);
                                     break;
@@ -147,14 +151,13 @@ function displayForm($steamAPIkey=''){
                     displaySteamConnectionError();
                 }
             }
-        </script>
-    </head>';
+        </script>';
 
     // Ternary operator seems to not work when injected inside the html code. :/
     ( isset($_POST['steamId']) && $_POST['steamId']!='') ? $defaultValue = $_POST['steamId'] : $defaultValue = '';
 
     $form .= '
-    <body onload="pickGame();">
+    <div id="steamRouletteWrapper" onload="pickGame();">
         <h1 id="titleSteamRoulette">Steam roulette</h1>
         
         <div id="errorBlock">
@@ -179,11 +182,10 @@ function displayForm($steamAPIkey=''){
             </div>
         </div>
         ';
-
     }
-
     $form .= '
-    </body>
+    </div>
+    
     <style>
         body{
             margin-top: 5%;
@@ -199,9 +201,15 @@ function displayForm($steamAPIkey=''){
         #linkToSteamTuto{
             font-size: x-small;
         }
-    </style>
+    </style>';
+
+    $footer = '
+    </body>
 </html>';
-    echo $form;
+    if($completeWebpage){
+        return $header . $form . $footer;
+    }
+    return $form;
 }
 
 
