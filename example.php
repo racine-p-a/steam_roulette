@@ -15,7 +15,6 @@ error_reporting(E_ALL);
 
 require_once dirname(__FILE__) . '/roulette.php';
 
-// todo : tutorial about installing and using it.
 // todo : remake the pickgame working onload (broke for embedding)
 
 /*

@@ -62,6 +62,11 @@ Place your steam id in the field, then click on « Send ».
 If the game does not satisfies you, click on the button « Pick a game » until you find the perfect
 one :=).
 
+Once you have your game, just click on the button Launch game. It will launch the game automatically
+if you have it or will download it.
+
+Enjoy :D
+
 ## License
 
 License Apache 2.0
