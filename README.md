@@ -1,5 +1,8 @@
 # steam_roulette
 
+A live version of this application is hosted on my website. You can test it
+[here](https://p-a-racine.fr/index.php?article=steamRoulette) if you want.
+
 ## Presentation
 This project is simple : it just picks randomly one of your game in your steam library. If you don't
 know what to play despite your huge library, this is just for you.
@@ -49,7 +52,8 @@ Place your steam id in the field, then click on « Send ».
 
 ![Steam roulette result](docs/img/steam_roulette_result.png "Steam roulette result")
 
-If the game does not satisfies you, click on the button « Pick a game ».
+If the game does not satisfies you, click on the button « Pick a game » until you find the perfect
+one :=).
 
 ## License
 
