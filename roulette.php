@@ -83,6 +83,22 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
 <html lang="en">
     <head>
         <title>Steam roulette</title>
+        <style>
+            body{
+                margin-top: 5%;
+                margin-left: 20%;
+                margin-right: 20%;
+                text-align: center;
+            }
+            
+            #titleSteamRoulette{
+                margin-bottom: 10%;
+            }
+            
+            #linkToSteamTuto{
+                font-size: x-small;
+            }
+        </style>
     </head>
     <body>';
 
@@ -184,24 +200,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
         ';
     }
     $form .= '
-    </div>
-    
-    <style>
-        body{
-            margin-top: 5%;
-            margin-left: 20%;
-            margin-right: 20%;
-            text-align: center;
-        }
-        
-        #titleSteamRoulette{
-            margin-bottom: 10%;
-        }
-        
-        #linkToSteamTuto{
-            font-size: x-small;
-        }
-    </style>';
+    </div>';
 
     $footer = '
     </body>

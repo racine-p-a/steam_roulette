@@ -16,14 +16,15 @@ error_reporting(E_ALL);
 require_once dirname(__FILE__) . '/roulette.php';
 
 // todo : tutorial about installing and using it.
-// todo check w3C validation
 
 try {
-    $mySteamRoulette =  getVueRoulette();
+    $mySteamRoulette =  getVueRoulette(true);
 } catch (Exception $e) {
     echo $e;
 }
 
+echo $mySteamRoulette;
+/*
 echo '<!DOCTYPE html>
 <html lang="en">
     <head>
@@ -33,3 +34,4 @@ echo '<!DOCTYPE html>
         <div>' . $mySteamRoulette . '</div>
     </body>
 </html>';
+*/
