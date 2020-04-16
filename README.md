@@ -43,7 +43,14 @@ echo '<!DOCTYPE html>
 
 The application appears like this :
 
+![Steam roulette home](docs/img/steam_roulette_home.png "Steam roulette home")
 
+Place your steam id in the field, then click on « Send ».
 
+![Steam roulette result](docs/img/steam_roulette_result.png "Steam roulette result")
+
+If the game does not satisfies you, click on the button « Pick a game ».
 
 ## License
+
+License Apache 2.0
