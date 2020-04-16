@@ -9,6 +9,13 @@ know what to play despite your huge library, this is just for you.
 
 ## Installation
 
+### Your steam API key
+
+First of all, you need a steam API key. Register for free on
+[steam dev](https://steamcommunity.com/dev/apikey).
+
+You must now write this key in the file named ___steam_api_key___.
+
 ### As a test
 Just clone the project where a webserver can access it. If you use Apache, place it under its working
 directory (/var/www/html or /var/www). And then, just open the example.php page.
