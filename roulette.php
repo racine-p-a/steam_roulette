@@ -127,6 +127,8 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
                 let codeHTML = \'<h4>\' + gameName + \'</h4>\';
                 codeHTML += \'<p><img src="https://steamcdn-a.akamaihd.net/steam/apps/\' + gameid + \'/header.jpg" / alt="Picture of the game : \' + gameName + \'"></p>\';
                 codeHTML += \'<p>Steam indicates you already played it for \' + timePlayed + \' hours.</p>\';
+                const linkToGame = \'steam://rungameid/\' + gameid;
+                codeHTML += \'<a href="\' + linkToGame + \'">Launch game</a>\';
                 const myGameBlock = document.getElementById(\'gameChosen\');
                 myGameBlock.innerHTML = codeHTML;
             }
