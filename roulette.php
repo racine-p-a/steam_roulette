@@ -13,6 +13,10 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+
+// todo : remake the pickgame working onload (broke for embedding)
+
 /*
  * The application get your API steam key and will use it during the processus.
  * Then, it displays a form to the user expecting a steam id as an input.
@@ -137,13 +141,13 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
              * Displays an error when unable to reach steam servers.
              */
             function displaySteamConnectionError() {
-                document.getElementById(\'errorBlock\').innerText = \'<p>Error while trying to reach steam API. Please, refresh the page.</p>\';
+                document.getElementById(\'errorBlock\').innerText = \'Error while trying to reach steam API. Please, refresh the page or resend your steam id. Sometimes Steam is very busy and won t respond.\';
             }
             
             /*
              * Pick randomly a game from the user library.
              */
-            function pickGame(firstLoad=false){
+            function pickGame(){
                 if(Object.keys(steamCompleteList).length > 10 && Object.keys(ownedGames).length !== 0) {
                     //console.log("you own " + Object.keys(ownedGames).length + " games.");
                     const indexGameToPick = Math.floor(Math.random() * Object.keys(ownedGames).length);
@@ -164,7 +168,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
                         }
                         count++;
                     }
-                } else if(firstLoad=false) {
+                } else if(Object.keys(steamCompleteList).length < 10) {
                     displaySteamConnectionError();
                 }
             }
@@ -177,8 +181,8 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
     <div id="steamRouletteWrapper" onload="pickGame();">
         <h1 id="titleSteamRoulette">Steam roulette</h1>
         
-        <div id="errorBlock">
-            
+        <div>
+            <p id="errorBlock"></p>            
         </div>
         
         <form method="post" action="' . $_SERVER['REQUEST_URI'] . '">

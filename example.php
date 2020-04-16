@@ -15,7 +15,6 @@ error_reporting(E_ALL);
 
 require_once dirname(__FILE__) . '/roulette.php';
 
-// todo : remake the pickgame working onload (broke for embedding)
 
 /*
  * For a complete web page ?
