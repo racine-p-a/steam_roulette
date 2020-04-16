@@ -13,7 +13,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 /*
  * The application get your API steam key and will use it during the processus.
  * Then, it displays a form to the user expecting a steam id as an input.
