@@ -21,7 +21,7 @@ error_reporting(E_ALL);
  */
 
 /**
- *
+ * Just launches everything.
  */
 function getVueRoulette(){
     // First of all, get the steam API key.
@@ -36,7 +36,8 @@ function getVueRoulette(){
 }
 
 /**
- * @param $steamAPIkey
+ * Retrieve the STEAM API developper key stored in the file ./steam_api_key
+ * @param $steamAPIkey String Pointer to the string where this function put the API key.
  * @throws Exception
  */
 function getAPIkey(&$steamAPIkey){
@@ -60,11 +61,12 @@ function getAPIkey(&$steamAPIkey){
 }
 
 /**
+ * Builds the entire HTML/CSS/js code of the page. then displays it.
+ * // todo make it embeddable.
  * @param string $steamAPIkey
  */
 function displayForm($steamAPIkey=''){
-    // todo : add https://steamcommunity.com/sharedfiles/filedetails/?l=french&id=209000244
-    // todo : presentation, explanation and context
+    // todo make it less ugly (need help)
 
     /*
      * Now, we face a choice : do we have a user id to explore ?
@@ -78,7 +80,7 @@ function displayForm($steamAPIkey=''){
         $completeSteamGameList = json_decode(file_get_contents('http://api.steampowered.com/ISteamApps/GetAppList/v0001/'), true)['applist']['apps']['app'];
     }
 
-    $form='<html>
+    $form='<html lang="en">
     <head>
         <title>Steam roulette</title>
         <script type="text/javascript">
@@ -99,9 +101,29 @@ function displayForm($steamAPIkey=''){
     }
 
     $form .= '};
-
-            function pickGame(){
-                if(Object.keys(steamCompleteList).length !== 0 && Object.keys(ownedGames).length !== 0) {
+            /**
+             * Updates a html block with data from the selected game.
+             */
+            function updateChosenGameView(gameid=0, gameName=\'\', timePlayed=0) {
+                let codeHTML = \'<h4>\' + gameName + \'</h4>\';
+                codeHTML += \'<p><img src="https://steamcdn-a.akamaihd.net/steam/apps/\' + gameid + \'/header.jpg" / alt="Picture of the game : \' + gameName + \'"></p>\';
+                codeHTML += \'<p>Steam indicates you already played it for \' + timePlayed + \' hours.</p>\';
+                const myGameBlock = document.getElementById(\'gameChosen\');
+                myGameBlock.innerHTML = codeHTML;
+            }
+            
+            /*
+             * Displays an error when unable to reach steam servers.
+             */
+            function displaySteamConnectionError() {
+                document.getElementById(\'errorBlock\').innerText = \'<p>Error while trying to reach steam API. Please, refresh the page.</p>\';
+            }
+            
+            /*
+             * Pick randomly a game from the user library.
+             */
+            function pickGame(firstLoad=false){
+                if(Object.keys(steamCompleteList).length > 10 && Object.keys(ownedGames).length !== 0) {
                     //console.log("you own " + Object.keys(ownedGames).length + " games.");
                     const indexGameToPick = Math.floor(Math.random() * Object.keys(ownedGames).length);
                     let count = 0;
@@ -112,6 +134,8 @@ function displayForm($steamAPIkey=''){
                             for(gameidcompleteList in steamCompleteList) {
                                 if(gameidcompleteList==gameid) {
                                     console.log("game name : " + steamCompleteList[gameidcompleteList]);
+                                    // Finally, we have all informations required. Let\'s update the page.
+                                    updateChosenGameView(gameid, steamCompleteList[gameidcompleteList], ownedGames[gameid]);
                                     break;
                                 }
                             }
@@ -119,29 +143,38 @@ function displayForm($steamAPIkey=''){
                         }
                         count++;
                     }
+                } else if(firstLoad=false) {
+                    displaySteamConnectionError();
                 }
             }
         </script>
     </head>';
 
+    // Ternary operator seems to not work when injected inside the html code. :/
+    ( isset($_POST['steamId']) && $_POST['steamId']!='') ? $defaultValue = $_POST['steamId'] : $defaultValue = '';
+
     $form .= '
     <body onload="pickGame();">
-        <h1>Steam roulette</h1>
+        <h1 id="titleSteamRoulette">Steam roulette</h1>
+        
+        <div id="errorBlock">
+            
+        </div>
         
         <form method="post" action="' . 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'] . '">
-            <h3>Please insert your user steam id</h3>
-            <input type="text" name="steamId">
+            <h3>Please insert your user steam id :</h3>
+            <input type="text" name="steamId" placeholder="steamid64" value="' . $defaultValue . '">
             <button type="submit">Send</button>
+            <p id="linkToSteamTuto">
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=209000244">How to get you steam id.</a>
+            </p>
         </form>
         ';
 
     if (count($gameList) > 0){
-        //var_dump(count($gameList));
-        $gameChosen = $gameList[array_rand($gameList)];
-        //var_dump($gameChosen);
         $form .= '<h5>Game :</h5>
         <div id="gameBlock">
-            <button onclick="pickGame();">Pick a game</button>
+            <button onclick="pickGame(true);">Pick a game</button>
             <div id="gameChosen">
             </div>
         </div>
@@ -151,12 +184,29 @@ function displayForm($steamAPIkey=''){
 
     $form .= '
     </body>
+    <style>
+        body{
+            margin-top: 5%;
+            margin-left: 20%;
+            margin-right: 20%;
+            text-align: center;
+        }
+        
+        #titleSteamRoulette{
+            margin-bottom: 10%;
+        }
+        
+        #linkToSteamTuto{
+            font-size: x-small;
+        }
+    </style>
 </html>';
     echo $form;
 }
 
 
 /**
+ * Returns all the game ids that a user owns on steam.
  * @param $steamAPIkey
  * @return false|string
  */
@@ -168,9 +218,13 @@ function getUserGames($steamAPIkey){
     return $data;
 }
 
-
+/**
+ * When given a certain game id, will return the data about the corresponding game.
+ * @param string $steamAPIkey
+ * @param string $steamGamiId
+ * @return false|string
+ */
 function getGameInformation($steamAPIkey='', $steamGamiId=''){
-    // http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=AC9C5E9BD8BA183B5F1CDD160F5689ED&appid=702670
     $gameData='{}';
     if($steamAPIkey!='' && $steamGamiId!=''){
         return file_get_contents('http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=' . $steamAPIkey . '&appid=' . $steamGamiId);
