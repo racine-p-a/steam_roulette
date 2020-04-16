@@ -16,6 +16,15 @@ error_reporting(E_ALL);
 require_once dirname(__FILE__) . '/roulette.php';
 
 // todo : tutorial about installing and using it.
+// todo : remake the pickgame working onload (broke for embedding)
+
+/*
+ * For a complete web page ?
+ * If true, this will generate the entire HTML code for a single page working by itself.
+ * If false, this will generate HTML code in a div tag that you can embbed in any webpage (just think to apply some 
+ * CSS style on it)
+ */
+$completeWebPage=true;
 
 try {
     $mySteamRoulette =  getVueRoulette(true);
@@ -23,7 +32,10 @@ try {
     echo $e;
 }
 
+// If you chose to generate a signle satnd-alone web page.
 echo $mySteamRoulette;
+
+// If not, here is an exemple of how integrate. (remember to comment the precedent line containing « echo $mySteamRoulette; »)
 /*
 echo '<!DOCTYPE html>
 <html lang="en">
