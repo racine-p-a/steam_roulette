@@ -179,7 +179,7 @@ function displayForm($steamAPIkey='', $completeWebpage=false){
             
         </div>
         
-        <form method="post" action="' . 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . '">
+        <form method="post" action="' . $_SERVER['REQUEST_URI'] . '">
             <h3>Please insert your user steam id :</h3>
             <input type="text" name="steamId" placeholder="steamid64" value="' . $defaultValue . '">
             <button type="submit">Send</button>
